@@ -3,373 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veri Analitiği Kariyer Koçu - Bekir</title>
+    <title>Data Analyst Roadmap 2026 - 24 Haftalık Ücretsiz Eğitim</title>
+    <meta name="description" content="Junior'dan Senior Data Analyst'e 24 haftalık ücretsiz yol haritası. Günlük görevler, video kaynakları ve projelerle kariyerinizi geliştirin.">
+    <meta name="keywords" content="data analyst, roadmap, sql, python, power bi, etl, data engineering, career path">
+    
+    <!-- Open Graph for LinkedIn -->
+    <meta property="og:title" content="Data Analyst Roadmap 2024 - 24 Haftalık Ücretsiz Eğitim">
+    <meta property="og:description" content="Junior'dan Senior Data Analyst'e 24 haftalık yol haritası. Günlük görevler ve projelerle kariyerinizi geliştirin.">
+    <meta property="og:image" content="https://[KULLANICI-ADINIZ].github.io/data-analytics-roadmap/assets/roadmap-preview.png">
+    <meta property="og:url" content="https://[KULLANICI-ADINIZ].github.io/data-analytics-roadmap">
+    <meta property="og:type" content="website">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #4361ee;
-            --secondary: #3a0ca3;
-            --accent: #4cc9f0;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --success: #4ade80;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --gray: #6c757d;
-            --card-bg: #ffffff;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            color: var(--dark);
-            line-height: 1.6;
-            min-height: 100vh;
-            padding-bottom: 60px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        header {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: white;
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            font-weight: 300;
-        }
-
-        .profile-box {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-        }
-
-        .profile-box h2 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 0.5rem;
-        }
-
-        .profile-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-        }
-
-        .detail-item {
-            background-color: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            border-left: 4px solid var(--primary);
-        }
-
-        .streak-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 2rem;
-            margin: 2rem 0;
-            flex-wrap: wrap;
-        }
-
-        .streak-box {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            text-align: center;
-            box-shadow: var(--shadow);
-            min-width: 250px;
-        }
-
-        .streak-count {
-            font-size: 3.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            font-family: 'Roboto Mono', monospace;
-        }
-
-        .streak-label {
-            font-size: 1.2rem;
-            color: var(--gray);
-            margin-top: 0.5rem;
-        }
-
-        .current-day {
-            background-color: var(--card-bg);
-            border-radius: 15px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-        }
-
-        .day-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .week-indicator {
-            background-color: var(--primary);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 30px;
-            font-weight: 600;
-        }
-
-        .task-complete-btn {
-            background-color: var(--success);
-            color: white;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-
-        .task-complete-btn:hover {
-            background-color: #22c55e;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(34, 197, 94, 0.3);
-        }
-
-        .task-complete-btn:disabled {
-            background-color: var(--gray);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .task-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .task-title {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--secondary);
-            margin-bottom: 0.8rem;
-            font-size: 1.3rem;
-        }
-
-        .task-content {
-            background-color: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 10px;
-            border-left: 4px solid var(--accent);
-        }
-
-        .video-links {
-            margin-top: 1rem;
-        }
-
-        .video-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background-color: var(--primary);
-            color: white;
-            padding: 0.7rem 1.5rem;
-            border-radius: 30px;
-            text-decoration: none;
-            margin-right: 1rem;
-            margin-bottom: 0.8rem;
-            transition: all 0.3s ease;
-        }
-
-        .video-link:hover {
-            background-color: var(--secondary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .curriculum-nav {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 2rem 0;
-            flex-wrap: wrap;
-        }
-
-        .curriculum-btn {
-            background-color: white;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            padding: 0.8rem 1.5rem;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .curriculum-btn:hover {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .curriculum-btn.active {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .week-content {
-            background-color: var(--card-bg);
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: var(--shadow);
-            display: none;
-        }
-
-        .week-content.active {
-            display: block;
-        }
-
-        .week-header {
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 0.5rem;
-        }
-
-        .day-list {
-            list-style-type: none;
-        }
-
-        .day-item {
-            padding: 1rem;
-            margin-bottom: 0.8rem;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid var(--primary);
-            transition: all 0.3s ease;
-        }
-
-        .day-item:hover {
-            transform: translateX(5px);
-            background-color: #e9ecef;
-        }
-
-        .day-item.completed {
-            border-left-color: var(--success);
-            background-color: #dcfce7;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 3rem;
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
-        .motivation {
-            font-style: italic;
-            color: var(--secondary);
-            margin-top: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .streak-container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .day-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>Veri Analitiği Kariyer Koçu</h1>
-            <p class="subtitle">Senior Data Analyst / Analytics Engineer yolculuğunuzda size rehberlik edecek kişisel asistanınız</p>
+        <!-- Hero Section for LinkedIn Sharing -->
+        <header class="hero-section">
+            <div class="hero-content">
+                <h1>📊 Data Analyst Roadmap 2024</h1>
+                <p class="subtitle">Junior'dan Senior Data Analyst'e 24 Haftalık Ücretsiz Yol Haritası</p>
+                <div class="cta-buttons">
+                    <a href="#start" class="cta-primary">Hemen Başla</a>
+                    <a href="https://github.com/[KULLANICI-ADINIZ]/data-analytics-roadmap" target="_blank" class="cta-secondary">
+                        <i class="fab fa-github"></i> Star on GitHub
+                    </a>
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-number">168</span>
+                        <span class="stat-label">Günlük Görev</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">24</span>
+                        <span class="stat-label">Hafta</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">4</span>
+                        <span class="stat-label">Ana Modül</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Ücretsiz</span>
+                    </div>
+                </div>
+            </div>
         </header>
 
-        <div class="profile-box">
-            <h2><i class="fas fa-user"></i> Profilim</h2>
-            <div class="profile-details">
-                <div class="detail-item">
-                    <h3><i class="fas fa-briefcase"></i> Unvan</h3>
-                    <p>Junior Data Analyst (Azure Synapse, Power BI, SQL, Excel)</p>
-                </div>
-                <div class="detail-item">
-                    <h3><i class="fas fa-graduation-cap"></i> Eğitim</h3>
-                    <p>Bilgisayar Mühendisliği Mezunu</p>
-                </div>
-                <div class="detail-item">
-                    <h3><i class="fas fa-exclamation-triangle"></i> Zayıf Noktam</h3>
-                    <p>Python'da ileri aşamalarda pes ediyorum, kod mantığını derinlemesine öğrenmek istiyorum</p>
-                </div>
-                <div class="detail-item">
-                    <h3><i class="fas fa-bullseye"></i> Hedefim</h3>
-                    <p>Senior Data Analyst / Analytics Engineer olmak. ETL ve Stored Procedure uzmanı olmak.</p>
-                </div>
+        <!-- LinkedIn Share Button -->
+        <div class="share-container">
+            <p class="share-text">Bu roadmap'i ihtiyacı olan arkadaşlarınızla paylaşın:</p>
+            <div class="share-buttons">
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://[KULLANICI-ADINIZ].github.io/data-analytics-roadmap" 
+                   target="_blank" class="share-btn linkedin">
+                    <i class="fab fa-linkedin"></i> LinkedIn'de Paylaş
+                </a>
+                <a href="https://twitter.com/intent/tweet?text=Data%20Analyst%20Roadmap%202024%20-%2024%20haftalık%20ücretsiz%20eğitim%20programı%20%F0%9F%9A%80%0A%0Ahttps://[KULLANICI-ADINIZ].github.io/data-analytics-roadmap" 
+                   target="_blank" class="share-btn twitter">
+                    <i class="fab fa-twitter"></i> Twitter'da Paylaş
+                </a>
+                <button onclick="copyLink()" class="share-btn copy">
+                    <i class="fas fa-link"></i> Linki Kopyala
+                </button>
             </div>
         </div>
 
-        <div class="streak-container">
-            <div class="streak-box">
-                <div class="streak-count" id="streakCount">0</div>
-                <div class="streak-label">Günlük Streak</div>
+        <!-- Author Info -->
+        <div class="author-card">
+            <div class="author-info">
+                <div class="author-avatar">B</div>
+                <div>
+                    <h3>Bekir - Junior Data Analyst</h3>
+                    <p>Azure Synapse, Power BI, SQL | Bilgisayar Mühendisliği Mezunu</p>
+                    <p class="author-quote">"Python'da pes etmemek ve kod mantığını derinlemesine öğrenmek için bu roadmap'i oluşturdum."</p>
+                </div>
             </div>
-            <div class="streak-box">
-                <div class="streak-count" id="completedDays">0/168</div>
-                <div class="streak-label">Tamamlanan Günler</div>
+            <a href="https://www.linkedin.com/in/YOUR-LINKEDIN-PROFILE" target="_blank" class="linkedin-profile">
+                <i class="fab fa-linkedin"></i> LinkedIn Profilim
+            </a>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="progress-section" id="start">
+            <div class="streak-container">
+                <div class="streak-box">
+                    <div class="streak-count" id="streakCount">0</div>
+                    <div class="streak-label">🔥 Günlük Streak</div>
+                </div>
+                <div class="streak-box">
+                    <div class="streak-count" id="completedDays">0/168</div>
+                    <div class="streak-label">✅ Tamamlanan Günler</div>
+                </div>
+                <div class="streak-box">
+                    <div class="streak-count" id="currentWeek">1/24</div>
+                    <div class="streak-label">📅 Mevcut Hafta</div>
+                </div>
             </div>
-            <div class="streak-box">
-                <div class="streak-count" id="currentWeek">1/24</div>
-                <div class="streak-label">Hafta</div>
+
+            <!-- Notification Toggle -->
+            <div class="notification-toggle">
+                <label class="switch">
+                    <input type="checkbox" id="notificationToggle">
+                    <span class="slider"></span>
+                </label>
+                <span class="toggle-label">Günlük hatırlatıcı bildirimleri aç</span>
+                <small class="toggle-note">(Her gün saat 20:00'de görevleriniz hatırlatılacak)</small>
             </div>
         </div>
 
+        <!-- Daily Task -->
         <div class="current-day" id="currentDayContainer">
             <div class="day-header">
                 <div>
-                    <h2 id="dayTitle">1. Gün: SQL Window Functions</h2>
-                    <div class="week-indicator" id="weekIndicator">1. Hafta: SQL & ETL</div>
+                    <h2 id="dayTitle">🎯 Gün 1: SQL Window Functions</h2>
+                    <div class="week-indicator" id="weekIndicator">1. Hafta: SQL & ETL Foundation</div>
                 </div>
                 <button class="task-complete-btn" id="completeTaskBtn">
                     <i class="fas fa-check-circle"></i> Görevi Tamamla
@@ -377,29 +126,52 @@
             </div>
 
             <div class="task-section">
-                <h3 class="task-title"><i class="fas fa-lightbulb"></i> Teorik Bilgi</h3>
+                <h3 class="task-title"><i class="fas fa-lightbulb"></i> 📚 Teorik Bilgi</h3>
                 <div class="task-content" id="theoryContent">
                     Window Functions, SQL'de satır grupları üzerinde hesaplama yaparken her satırı ayrı ayrı işleme olanağı sağlar. OVER() clause ile birlikte kullanılır. ROW_NUMBER(), RANK(), DENSE_RANK(), LEAD(), LAG(), SUM() OVER(PARTITION BY ...) gibi fonksiyonlar bulunur.
                 </div>
             </div>
 
             <div class="task-section">
-                <h3 class="task-title"><i class="fas fa-play-circle"></i> Önerilen Videolar</h3>
+                <h3 class="task-title"><i class="fas fa-play-circle"></i> 🎥 Önerilen Videolar</h3>
                 <div class="task-content">
-                    <p>Bugünkü konuyu pekiştirmek için aşağıdaki videoları izleyebilirsiniz:</p>
-                    <div class="video-links">
-                        <a href="https://www.youtube.com/watch?v=Ww71knvhQ-s" target="_blank" class="video-link">
-                            <i class="fab fa-youtube"></i> Alex The Analyst: SQL Window Functions
+                    <div class="video-grid">
+                        <a href="https://www.youtube.com/watch?v=Ww71knvhQ-s" target="_blank" class="video-card">
+                            <div class="video-thumbnail" style="background-color: #FF0000;">
+                                <i class="fab fa-youtube"></i>
+                            </div>
+                            <div class="video-info">
+                                <h4>SQL Window Functions</h4>
+                                <p>Alex The Analyst</p>
+                                <span class="video-duration">15:32</span>
+                            </div>
                         </a>
-                        <a href="https://www.youtube.com/watch?v=H6OTMoXjNiM" target="_blank" class="video-link">
-                            <i class="fab fa-youtube"></i> SQLBI: Advanced Window Functions
+                        <a href="https://www.youtube.com/watch?v=H6OTMoXjNiM" target="_blank" class="video-card">
+                            <div class="video-thumbnail" style="background-color: #1DA1F2;">
+                                <i class="fab fa-youtube"></i>
+                            </div>
+                            <div class="video-info">
+                                <h4>Advanced Window Functions</h4>
+                                <p>SQLBI</p>
+                                <span class="video-duration">22:45</span>
+                            </div>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=TmhCJnYF9-8" target="_blank" class="video-card">
+                            <div class="video-thumbnail" style="background-color: #0A66C2;">
+                                <i class="fab fa-youtube"></i>
+                            </div>
+                            <div class="video-info">
+                                <h4>SQL for Data Analysis</h4>
+                                <p>Luke Barousse</p>
+                                <span class="video-duration">18:20</span>
+                            </div>
                         </a>
                     </div>
                 </div>
             </div>
 
             <div class="task-section">
-                <h3 class="task-title"><i class="fas fa-tasks"></i> Bugünkü Görev</h3>
+                <h3 class="task-title"><i class="fas fa-tasks"></i> 📝 Bugünkü Görev</h3>
                 <div class="task-content" id="taskContent">
                     <p><strong>Pratik Ödev:</strong> Azure Synapse'de veya herhangi bir SQL ortamında aşağıdaki işlemleri yapın:</p>
                     <ol>
@@ -408,49 +180,136 @@
                         <li>LEAD() ve LAG() fonksiyonları ile bir zaman serisindeki önceki ve sonraki değerleri getirin</li>
                         <li>SUM() OVER(PARTITION BY ...) ile kategoriler bazında toplam hesaplayın</li>
                     </ol>
-                    <p><strong>İpucu:</strong> Eğer takılırsanız, fonksiyonların mantığını düşünün. ROW_NUMBER her satıra benzersiz bir sıra numarası verirken, RANK aynı değere sahip satırlara aynı sırayı verir ve bir sonraki sırayı atlar.</p>
+                    <div class="tip-box">
+                        <i class="fas fa-lightbulb"></i>
+                        <p><strong>İpucu:</strong> Takılırsanız kodun mantığını düşünün. ROW_NUMBER her satıra benzersiz sıra verirken, RANK aynı değere sahip satırlara aynı sırayı verir ve sonraki sırayı atlar.</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="curriculum-nav">
-            <button class="curriculum-btn active" data-week="1">1-6. Hafta: SQL & ETL</button>
-            <button class="curriculum-btn" data-week="7">7-12. Hafta: Power BI & DAX</button>
-            <button class="curriculum-btn" data-week="13">13-18. Hafta: Python & Otomasyon</button>
-            <button class="curriculum-btn" data-week="19">19-24. Hafta: End-to-End Proje</button>
+        <!-- Roadmap Navigation -->
+        <div class="roadmap-nav">
+            <h2><i class="fas fa-map-signs"></i> Yol Haritası</h2>
+            <div class="roadmap-buttons">
+                <button class="roadmap-btn active" data-week="1">
+                    <i class="fas fa-database"></i>
+                    <span>SQL & ETL</span>
+                    <small>Hafta 1-6</small>
+                </button>
+                <button class="roadmap-btn" data-week="7">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Power BI & DAX</span>
+                    <small>Hafta 7-12</small>
+                </button>
+                <button class="roadmap-btn" data-week="13">
+                    <i class="fab fa-python"></i>
+                    <span>Python & Otomasyon</span>
+                    <small>Hafta 13-18</small>
+                </button>
+                <button class="roadmap-btn" data-week="19">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>End-to-End Proje</span>
+                    <small>Hafta 19-24</small>
+                </button>
+            </div>
         </div>
 
-        <div class="week-content active" id="week1-6">
-            <h3 class="week-header">1-6. Hafta: SQL & ETL Müfredatı</h3>
-            <ul class="day-list" id="week1List">
+        <!-- Roadmap Content -->
+        <div class="roadmap-content active" id="week1-6">
+            <h3 class="roadmap-header">📊 SQL & ETL Foundation (Hafta 1-6)</h3>
+            <div class="roadmap-desc">
+                <p>ETL süreçleri ve ileri SQL konularında uzmanlaşın. Azure Synapse, Stored Procedures ve veri pipeline'ları öğrenin.</p>
+            </div>
+            <div class="week-grid" id="week1List">
                 <!-- JavaScript ile doldurulacak -->
-            </ul>
+            </div>
         </div>
 
-        <div class="week-content" id="week7-12">
-            <h3 class="week-header">7-12. Hafta: Power BI & DAX Müfredatı</h3>
-            <ul class="day-list" id="week2List">
+        <div class="roadmap-content" id="week7-12">
+            <h3 class="roadmap-header">📈 Power BI & DAX Mastery (Hafta 7-12)</h3>
+            <div class="roadmap-desc">
+                <p>Star Schema tasarımı, filter context, time intelligence ve dynamic RLS ile Power BI'da uzmanlaşın.</p>
+            </div>
+            <div class="week-grid" id="week2List">
                 <!-- JavaScript ile doldurulacak -->
-            </ul>
+            </div>
         </div>
 
-        <div class="week-content" id="week13-18">
-            <h3 class="week-header">13-18. Hafta: Python & Otomasyon Müfredatı</h3>
-            <ul class="day-list" id="week3List">
+        <div class="roadmap-content" id="week13-18">
+            <h3 class="roadmap-header">🐍 Python & Automation (Hafta 13-18)</h3>
+            <div class="roadmap-desc">
+                <p>Pandas, NumPy, API entegrasyonu ve otomasyon script'leri ile Python'da veri analizi becerilerinizi geliştirin.</p>
+            </div>
+            <div class="week-grid" id="week3List">
                 <!-- JavaScript ile doldurulacak -->
-            </ul>
+            </div>
         </div>
 
-        <div class="week-content" id="week19-24">
-            <h3 class="week-header">19-24. Hafta: End-to-End Proje Müfredatı</h3>
-            <ul class="day-list" id="week4List">
+        <div class="roadmap-content" id="week19-24">
+            <h3 class="roadmap-header">🚀 End-to-End Azure Project (Hafta 19-24)</h3>
+            <div class="roadmap-desc">
+                <p>Azure üzerinde tam kapsamlı bir veri projesi geliştirin. Tüm öğrendiklerinizi birleştirin.</p>
+            </div>
+            <div class="week-grid" id="week4List">
                 <!-- JavaScript ile doldurulacak -->
-            </ul>
+            </div>
         </div>
 
-        <div class="footer">
-            <p>Veri Analitiği Kariyer Koçu v1.0 | Bekir için özel olarak hazırlanmıştır</p>
-            <p class="motivation">"Kodun mantığını anlamak, sadece kodu çalıştırmaktan daha değerlidir."</p>
+        <!-- Community Section -->
+        <div class="community-section">
+            <h2><i class="fas fa-users"></i> Topluluğa Katılın</h2>
+            <div class="community-cards">
+                <div class="community-card">
+                    <i class="fab fa-linkedin"></i>
+                    <h3>LinkedIn Grubu</h3>
+                    <p>Diğer data analyst'lerle bağlantı kurun</p>
+                    <a href="https://www.linkedin.com/groups/" target="_blank" class="community-link">Katıl</a>
+                </div>
+                <div class="community-card">
+                    <i class="fab fa-github"></i>
+                    <h3>GitHub Repo</h3>
+                    <p>Projeyi geliştirmemize yardım edin</p>
+                    <a href="https://github.com/[KULLANICI-ADINIZ]/data-analytics-roadmap" target="_blank" class="community-link">Katkıda Bulun</a>
+                </div>
+                <div class="community-card">
+                    <i class="fas fa-envelope"></i>
+                    <h3>Haftalık Bülten</h3>
+                    <p>İlerleme ipuçları ve kaynaklar</p>
+                    <button class="community-link" onclick="subscribeNewsletter()">Abone Ol</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>Data Analyst Roadmap 2024</h3>
+                    <p>Junior'dan Senior'a 24 haftalık yolculuk</p>
+                </div>
+                <div class="footer-links">
+                    <a href="https://github.com/[KULLANICI-ADINIZ]/data-analytics-roadmap" target="_blank">GitHub</a>
+                    <a href="#" onclick="showFeedbackModal()">Geri Bildirim</a>
+                    <a href="#" onclick="showResourcesModal()">Ek Kaynaklar</a>
+                    <a href="#" onclick="showAboutModal()">Hakkında</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>Built with ❤️ by Bekir | Data Analyst Community</p>
+                <p class="motivation">"Kodun mantığını anlamak, sadece kodu çalıştırmaktan daha değerlidir."</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <div id="feedbackModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('feedbackModal')">&times;</span>
+            <h3>📝 Geri Bildirim Gönder</h3>
+            <p>Bu roadmap'i nasıl geliştirebiliriz?</p>
+            <textarea id="feedbackText" placeholder="Görüşleriniz..."></textarea>
+            <button onclick="submitFeedback()" class="modal-btn">Gönder</button>
         </div>
     </div>
 

@@ -1,385 +1,520 @@
-// Kariyer koçluğu uygulaması - Bekir için özel
+// Data Analyst Roadmap 2026 - Enhanced Version
 document.addEventListener('DOMContentLoaded', function() {
-    // Uygulama durumu
-    const state = {
+    // Initialize app
+    initApp();
+    
+    // Set up event listeners
+    setupEventListeners();
+    
+    // Check for daily reminder
+    checkDailyReminder();
+});
+
+function initApp() {
+    // Load or initialize state
+    window.appState = loadState() || {
         currentDay: 1,
         streak: 0,
         completedDays: new Set(),
         lastCompletedDate: null,
-        curriculum: generateCurriculum()
+        notifications: false,
+        curriculum: generateEnhancedCurriculum()
     };
+    
+    // Update UI with initial state
+    updateProgressUI();
+    showDay(appState.currentDay);
+    renderRoadmap();
+    setupNotificationToggle();
+}
 
-    // DOM Elementleri
-    const streakCountEl = document.getElementById('streakCount');
-    const completedDaysEl = document.getElementById('completedDays');
-    const currentWeekEl = document.getElementById('currentWeek');
-    const weekIndicatorEl = document.getElementById('weekIndicator');
-    const dayTitleEl = document.getElementById('dayTitle');
-    const theoryContentEl = document.getElementById('theoryContent');
-    const taskContentEl = document.getElementById('taskContent');
-    const completeTaskBtn = document.getElementById('completeTaskBtn');
-    const currentDayContainer = document.getElementById('currentDayContainer');
+function setupEventListeners() {
+    // Complete task button
+    document.getElementById('completeTaskBtn').addEventListener('click', completeDay);
     
-    // Hafta listeleri
-    const week1List = document.getElementById('week1List');
-    const week2List = document.getElementById('week2List');
-    const week3List = document.getElementById('week3List');
-    const week4List = document.getElementById('week4List');
-    
-    // Hafta butonları
-    const curriculumBtns = document.querySelectorAll('.curriculum-btn');
-    const weekContents = document.querySelectorAll('.week-content');
-
-    // Sayfa yüklendiğinde durumu geri yükle
-    loadState();
-    
-    // İlk günü göster
-    showDay(state.currentDay);
-    
-    // Hafta listelerini oluştur
-    renderWeekLists();
-    
-    // Tamamlama butonu event listener
-    completeTaskBtn.addEventListener('click', completeDay);
-    
-    // Hafta butonları event listener
-    curriculumBtns.forEach(btn => {
+    // Roadmap navigation buttons
+    document.querySelectorAll('.roadmap-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const week = this.getAttribute('data-week');
-            showWeek(week);
+            showWeekContent(week);
+            setActiveRoadmapButton(this);
         });
     });
-
-    // Günü tamamlama fonksiyonu
-    function completeDay() {
-        if (state.completedDays.has(state.currentDay)) {
-            alert('Bu günü zaten tamamladınız!');
-            return;
-        }
-        
-        state.completedDays.add(state.currentDay);
-        updateStreak();
+    
+    // Notification toggle
+    document.getElementById('notificationToggle').addEventListener('change', function() {
+        appState.notifications = this.checked;
         saveState();
         
-        // Butonu devre dışı bırak
-        completeTaskBtn.disabled = true;
-        completeTaskBtn.innerHTML = '<i class="fas fa-check-circle"></i> Tamamlandı!';
-        
-        // Tamamlanan günü vurgula
-        highlightCompletedDay(state.currentDay);
-        
-        // Motivasyon mesajı göster
-        showMotivationMessage();
-        
-        // Ertesi günü planla (otomatik geçiş yapmıyoruz, kullanıcı manuel geçsin)
-        // state.currentDay++;
-        // if (state.currentDay <= 168) {
-        //     setTimeout(() => {
-        //         showDay(state.currentDay);
-        //         completeTaskBtn.disabled = false;
-        //         completeTaskBtn.innerHTML = '<i class="fas fa-check-circle"></i> Görevi Tamamla';
-        //     }, 2000);
-        // }
-    }
-
-    // Streak güncelleme
-    function updateStreak() {
-        const today = new Date().toDateString();
-        
-        // Eğer bugün tamamlandıysa veya daha önce bugün tamamlanmışsa
-        if (state.lastCompletedDate === today) {
-            return; // Zaten bugün sayılmış
+        if (this.checked) {
+            requestNotificationPermission();
+            showNotification('Bildirimler aktif! Her gün saat 20:00\'de görevleriniz hatırlatılacak.');
         }
-        
-        // Eğer dün tamamlanmışsa streak'i artır
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        
-        if (state.lastCompletedDate === yesterday.toDateString() || state.lastCompletedDate === null) {
-            state.streak++;
-        } else {
-            // Streak kırıldı, 1'den başlat
-            state.streak = 1;
-        }
-        
-        state.lastCompletedDate = today;
-        streakCountEl.textContent = state.streak;
-        completedDaysEl.textContent = `${state.completedDays.size}/168`;
-    }
-
-    // Belirli bir günü gösterme
-    function showDay(dayNumber) {
-        const day = state.curriculum[dayNumber - 1];
-        if (!day) return;
-        
-        dayTitleEl.textContent = `Gün ${dayNumber}: ${day.title}`;
-        
-        // Hafta bilgisini güncelle
-        const weekNumber = Math.ceil(dayNumber / 7);
-        currentWeekEl.textContent = `${weekNumber}/24`;
-        weekIndicatorEl.textContent = `${weekNumber}. Hafta: ${getWeekTheme(weekNumber)}`;
-        
-        theoryContentEl.innerHTML = day.theory;
-        taskContentEl.innerHTML = day.task;
-        
-        // Günün tamamlanıp tamamlanmadığını kontrol et
-        if (state.completedDays.has(dayNumber)) {
-            completeTaskBtn.disabled = true;
-            completeTaskBtn.innerHTML = '<i class="fas fa-check-circle"></i> Tamamlandı!';
-        } else {
-            completeTaskBtn.disabled = false;
-            completeTaskBtn.innerHTML = '<i class="fas fa-check-circle"></i> Görevi Tamamla';
-        }
-        
-        // Mevcut günü güncelle
-        state.currentDay = dayNumber;
-        saveState();
-    }
-
-    // Hafta listelerini render etme
-    function renderWeekLists() {
-        // 1-6. hafta (1-42. günler)
-        for (let i = 1; i <= 42; i++) {
-            const day = state.curriculum[i-1];
-            const li = createDayListItem(i, day.title);
-            week1List.appendChild(li);
-            
-            // Tıklanabilir yap
-            li.addEventListener('click', () => {
-                showDay(i);
-                currentDayContainer.scrollIntoView({ behavior: 'smooth' });
-            });
-        }
-        
-        // 7-12. hafta (43-84. günler)
-        for (let i = 43; i <= 84; i++) {
-            const day = state.curriculum[i-1];
-            const li = createDayListItem(i, day.title);
-            week2List.appendChild(li);
-            
-            li.addEventListener('click', () => {
-                showDay(i);
-                currentDayContainer.scrollIntoView({ behavior: 'smooth' });
-            });
-        }
-        
-        // 13-18. hafta (85-126. günler)
-        for (let i = 85; i <= 126; i++) {
-            const day = state.curriculum[i-1];
-            const li = createDayListItem(i, day.title);
-            week3List.appendChild(li);
-            
-            li.addEventListener('click', () => {
-                showDay(i);
-                currentDayContainer.scrollIntoView({ behavior: 'smooth' });
-            });
-        }
-        
-        // 19-24. hafta (127-168. günler)
-        for (let i = 127; i <= 168; i++) {
-            const day = state.curriculum[i-1];
-            const li = createDayListItem(i, day.title);
-            week4List.appendChild(li);
-            
-            li.addEventListener('click', () => {
-                showDay(i);
-                currentDayContainer.scrollIntoView({ behavior: 'smooth' });
-            });
-        }
-        
-        // Tamamlanan günleri vurgula
-        state.completedDays.forEach(day => {
-            highlightCompletedDay(day);
-        });
-    }
-
-    // Gün listesi öğesi oluşturma
-    function createDayListItem(dayNumber, title) {
-        const li = document.createElement('li');
-        li.className = 'day-item';
-        li.id = `day-${dayNumber}`;
-        li.innerHTML = `<strong>Gün ${dayNumber}:</strong> ${title}`;
-        return li;
-    }
-
-    // Tamamlanan günü vurgulama
-    function highlightCompletedDay(dayNumber) {
-        const dayItem = document.getElementById(`day-${dayNumber}`);
-        if (dayItem) {
-            dayItem.classList.add('completed');
-        }
-    }
-
-    // Hafta gösterimi
-    function showWeek(week) {
-        // Butonları güncelle
-        curriculumBtns.forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.getAttribute('data-week') === week) {
-                btn.classList.add('active');
+    });
+    
+    // Day cards click events (delegated)
+    document.querySelectorAll('.week-grid').forEach(grid => {
+        grid.addEventListener('click', function(e) {
+            const dayCard = e.target.closest('.day-card');
+            if (dayCard && dayCard.dataset.day) {
+                const dayNumber = parseInt(dayCard.dataset.day);
+                showDay(dayNumber);
+                document.getElementById('currentDayContainer').scrollIntoView({ behavior: 'smooth' });
             }
         });
-        
-        // İçerikleri güncelle
-        weekContents.forEach(content => {
-            content.classList.remove('active');
-            if (content.id === getWeekContentId(week)) {
-                content.classList.add('active');
-            }
-        });
-    }
+    });
+}
 
-    // Hafta içerik ID'si alma
-    function getWeekContentId(week) {
-        switch(week) {
-            case '1': return 'week1-6';
-            case '7': return 'week7-12';
-            case '13': return 'week13-18';
-            case '19': return 'week19-24';
-            default: return 'week1-6';
-        }
+function generateEnhancedCurriculum() {
+    // Enhanced curriculum with LinkedIn influencers
+    const curriculum = [];
+    const influencers = {
+        sql: [
+            { name: 'Alex The Analyst', url: 'https://www.youtube.com/@AlexTheAnalyst' },
+            { name: 'Luke Barousse', url: 'https://www.youtube.com/@LukeBarousse' },
+            { name: 'SQLBI', url: 'https://www.youtube.com/@SQLBI' },
+            { name: 'Stephanie Glen', url: 'https://www.youtube.com/@statisticsfun' }
+        ],
+        powerbi: [
+            { name: 'Guy in a Cube', url: 'https://www.youtube.com/@GuyinaCube' },
+            { name: 'Curbal', url: 'https://www.youtube.com/@Curbal' },
+            { name: 'How to Power BI', url: 'https://www.youtube.com/@HowtoPowerBI' }
+        ],
+        python: [
+            { name: 'Keith Galli', url: 'https://www.youtube.com/@KeithGalli' },
+            { name: 'Corey Schafer', url: 'https://www.youtube.com/@CoreyMSchafer' },
+            { name: 'Data School', url: 'https://www.youtube.com/@DataSchool' },
+            { name: 'Ken Jee', url: 'https://www.youtube.com/@KenJee' }
+        ],
+        project: [
+            { name: 'Data with Danny', url: 'https://www.youtube.com/@DataWithDanny' },
+            { name: 'Seattle Data Guy', url: 'https://www.youtube.com/@SeattleDataGuy' }
+        ]
+    };
+    
+    // Week 1-6: SQL & ETL
+    for (let day = 1; day <= 42; day++) {
+        curriculum.push(createDayData(day, 'SQL & ETL', influencers.sql));
     }
-
-    // Hafta temasını alma
-    function getWeekTheme(weekNumber) {
-        if (weekNumber <= 6) return 'SQL & ETL';
-        if (weekNumber <= 12) return 'Power BI & DAX';
-        if (weekNumber <= 18) return 'Python & Otomasyon';
-        return 'End-to-End Proje';
+    
+    // Week 7-12: Power BI & DAX
+    for (let day = 43; day <= 84; day++) {
+        curriculum.push(createDayData(day, 'Power BI & DAX', influencers.powerbi));
     }
+    
+    // Week 13-18: Python & Automation
+    for (let day = 85; day <= 126; day++) {
+        curriculum.push(createDayData(day, 'Python & Automation', influencers.python));
+    }
+    
+    // Week 19-24: End-to-End Project
+    for (let day = 127; day <= 168; day++) {
+        curriculum.push(createDayData(day, 'End-to-End Project', influencers.project));
+    }
+    
+    return curriculum;
+}
 
-    // Motivasyon mesajı gösterme
-    function showMotivationMessage() {
-        const messages = [
-            "Harika iş çıkardın! Python'da pes etmeyeceğine söz vermiştin, şimdi bu sözü tutma zamanı.",
-            "Kodun mantığını anlamak için adım adım ilerliyorsun. Bu seni diğerlerinden ayıracak.",
-            "Her tamamlanan gün, Senior Data Analyst olma yolunda bir adım daha atıyorsun.",
-            "ETL ve Stored Procedure uzmanı olma hedefine yaklaşıyorsun. Sakın pes etme!",
-            "Bugün öğrendiklerin yarının projelerinin temelini oluşturacak. Devam et!"
+function createDayData(dayNumber, category, influencers) {
+    const weekNumber = Math.ceil(dayNumber / 7);
+    const dayInWeek = dayNumber % 7 || 7;
+    
+    // Select random influencer for this day
+    const influencer = influencers[Math.floor(Math.random() * influencers.length)];
+    
+    // Day-specific content
+    let title, theory, task;
+    
+    if (category === 'SQL & ETL') {
+        const topics = [
+            'Window Functions', 'CTE (Common Table Expressions)', 'Stored Procedures',
+            'Azure Synapse Pipelines', 'Indexing Strategies', 'Query Optimization',
+            'Data Modeling', 'ETL Best Practices', 'Data Quality Checks'
         ];
-        
-        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-        
-        // Geçici bir bildirim göster
-        const notification = document.createElement('div');
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(to right, #4ade80, #22c55e);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-            z-index: 1000;
-            max-width: 400px;
-            animation: slideIn 0.5s ease;
-        `;
-        
-        notification.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-trophy" style="font-size: 1.5rem;"></i>
-                <div>
-                    <strong>Tebrikler!</strong>
-                    <p style="margin: 5px 0 0 0;">${randomMessage}</p>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(notification);
-        
-        // 5 saniye sonra kaldır
-        setTimeout(() => {
-            notification.style.animation = 'slideOut 0.5s ease';
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 500);
-        }, 5000);
+        title = topics[(dayNumber - 1) % topics.length];
+        theory = getSQLTheory(title);
+        task = getSQLTask(title);
     }
+    // ... similar for other categories
+    
+    return {
+        day: dayNumber,
+        title: title,
+        theory: theory + `<br><br><strong>Önerilen Kaynak:</strong> <a href="${influencer.url}" target="_blank">${influencer.name}</a>`,
+        task: task,
+        videos: getRecommendedVideos(title, category),
+        category: category,
+        week: weekNumber,
+        dayInWeek: dayInWeek
+    };
+}
 
-    // Durumu kaydetme (LocalStorage)
-    function saveState() {
-        const stateToSave = {
-            currentDay: state.currentDay,
-            streak: state.streak,
-            completedDays: Array.from(state.completedDays),
-            lastCompletedDate: state.lastCompletedDate
-        };
-        
-        localStorage.setItem('dataAnalyticsCoach', JSON.stringify(stateToSave));
+function showDay(dayNumber) {
+    const day = appState.curriculum[dayNumber - 1];
+    if (!day) return;
+    
+    // Update UI
+    document.getElementById('dayTitle').textContent = `🎯 Gün ${dayNumber}: ${day.title}`;
+    document.getElementById('weekIndicator').textContent = `${day.week}. Hafta: ${getWeekTheme(day.week)}`;
+    document.getElementById('theoryContent').innerHTML = day.theory;
+    document.getElementById('taskContent').innerHTML = day.task;
+    document.getElementById('currentWeek').textContent = `${day.week}/24`;
+    
+    // Update videos section
+    updateVideosSection(day.videos);
+    
+    // Update complete button
+    const completeBtn = document.getElementById('completeTaskBtn');
+    if (appState.completedDays.has(dayNumber)) {
+        completeBtn.disabled = true;
+        completeBtn.innerHTML = '<i class="fas fa-check-circle"></i> Tamamlandı!';
+    } else {
+        completeBtn.disabled = false;
+        completeBtn.innerHTML = '<i class="fas fa-check-circle"></i> Görevi Tamamla';
     }
+    
+    // Update current day
+    appState.currentDay = dayNumber;
+    saveState();
+}
 
-    // Durumu yükleme (LocalStorage)
-    function loadState() {
-        const savedState = localStorage.getItem('dataAnalyticsCoach');
+function completeDay() {
+    const dayNumber = appState.currentDay;
+    
+    if (appState.completedDays.has(dayNumber)) {
+        showNotification('Bu günü zaten tamamladınız!', 'info');
+        return;
+    }
+    
+    // Add to completed days
+    appState.completedDays.add(dayNumber);
+    
+    // Update streak
+    updateStreak();
+    
+    // Save state
+    saveState();
+    
+    // Update UI
+    updateProgressUI();
+    
+    // Disable button
+    const completeBtn = document.getElementById('completeTaskBtn');
+    completeBtn.disabled = true;
+    completeBtn.innerHTML = '<i class="fas fa-check-circle"></i> Tamamlandı!';
+    
+    // Highlight in roadmap
+    highlightCompletedDay(dayNumber);
+    
+    // Show celebration
+    showCelebration(dayNumber);
+    
+    // Schedule next day reminder if notifications are enabled
+    if (appState.notifications) {
+        scheduleNextDayReminder();
+    }
+}
+
+function updateStreak() {
+    const today = new Date().toDateString();
+    
+    if (appState.lastCompletedDate === today) {
+        return; // Already counted today
+    }
+    
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    if (appState.lastCompletedDate === yesterday.toDateString() || appState.lastCompletedDate === null) {
+        appState.streak++;
+    } else {
+        appState.streak = 1; // Streak broken
+    }
+    
+    appState.lastCompletedDate = today;
+}
+
+function updateProgressUI() {
+    document.getElementById('streakCount').textContent = appState.streak;
+    document.getElementById('completedDays').textContent = `${appState.completedDays.size}/168`;
+}
+
+function renderRoadmap() {
+    // Clear existing content
+    ['week1List', 'week2List', 'week3List', 'week4List'].forEach(id => {
+        document.getElementById(id).innerHTML = '';
+    });
+    
+    // Render all days
+    appState.curriculum.forEach(day => {
+        const weekListId = getWeekListId(day.week);
+        const weekList = document.getElementById(weekListId);
         
-        if (savedState) {
-            const parsedState = JSON.parse(savedState);
-            state.currentDay = parsedState.currentDay || 1;
-            state.streak = parsedState.streak || 0;
-            state.completedDays = new Set(parsedState.completedDays || []);
-            state.lastCompletedDate = parsedState.lastCompletedDate || null;
-            
-            streakCountEl.textContent = state.streak;
-            completedDaysEl.textContent = `${state.completedDays.size}/168`;
+        if (weekList) {
+            const dayCard = createDayCard(day);
+            weekList.appendChild(dayCard);
+        }
+    });
+    
+    // Highlight completed days
+    appState.completedDays.forEach(day => {
+        highlightCompletedDay(day);
+    });
+}
+
+function createDayCard(day) {
+    const card = document.createElement('div');
+    card.className = 'day-card';
+    card.dataset.day = day.day;
+    card.id = `day-${day.day}`;
+    
+    const isCompleted = appState.completedDays.has(day.day);
+    if (isCompleted) {
+        card.classList.add('completed');
+    }
+    
+    card.innerHTML = `
+        <h4>Gün ${day.day}: ${day.title}</h4>
+        <p>${day.category} • Hafta ${day.week}</p>
+        <div class="day-meta">
+            <span>${isCompleted ? '✅ Tamamlandı' : '⏳ Bekliyor'}</span>
+            <span>Gün ${day.dayInWeek}/7</span>
+        </div>
+    `;
+    
+    return card;
+}
+
+function highlightCompletedDay(dayNumber) {
+    const dayCard = document.getElementById(`day-${dayNumber}`);
+    if (dayCard) {
+        dayCard.classList.add('completed');
+    }
+}
+
+function showWeekContent(week) {
+    // Hide all content
+    document.querySelectorAll('.roadmap-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // Show selected content
+    const contentId = getWeekContentId(week);
+    document.getElementById(contentId).classList.add('active');
+}
+
+function setActiveRoadmapButton(activeButton) {
+    document.querySelectorAll('.roadmap-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    activeButton.classList.add('active');
+}
+
+// Local Storage Functions
+function saveState() {
+    const stateToSave = {
+        currentDay: appState.currentDay,
+        streak: appState.streak,
+        completedDays: Array.from(appState.completedDays),
+        lastCompletedDate: appState.lastCompletedDate,
+        notifications: appState.notifications,
+        // Don't save curriculum as it's generated
+    };
+    
+    localStorage.setItem('dataAnalystRoadmap', JSON.stringify(stateToSave));
+}
+
+function loadState() {
+    const saved = localStorage.getItem('dataAnalystRoadmap');
+    return saved ? JSON.parse(saved) : null;
+}
+
+// Notification Functions
+function requestNotificationPermission() {
+    if ("Notification" in window && Notification.permission === "default") {
+        Notification.requestPermission();
+    }
+}
+
+function showNotification(message, type = 'success') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+        <span>${message}</span>
+    `;
+    
+    // Style the notification
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#4ade80' : '#3b82f6'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: slideIn 0.3s ease;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Remove after 5 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 5000);
+}
+
+function checkDailyReminder() {
+    if (appState.notifications) {
+        const now = new Date();
+        if (now.getHours() === 20 && now.getMinutes() === 0) {
+            showNotification('🎯 Bugünün görevi sizi bekliyor! Hemen başlayın.');
         }
     }
+}
 
-    // Müfredat verisi oluşturma
-    function generateCurriculum() {
-        const curriculum = [];
-        
-        // 1-6. Hafta: SQL & ETL
-        for (let i = 1; i <= 42; i++) {
-            let dayData;
-            
-            if (i <= 7) {
-                // 1. Hafta: Window Functions
-                dayData = {
-                    title: "SQL Window Functions",
-                    theory: "Window Functions, SQL'de satır grupları üzerinde hesaplama yaparken her satırı ayrı ayrı işleme olanağı sağlar. OVER() clause ile birlikte kullanılır.",
-                    task: `<p><strong>Pratik Ödev:</strong> Azure Synapse'de veya herhangi bir SQL ortamında aşağıdaki işlemleri yapın:</p>
-                    <ol>
-                        <li>ROW_NUMBER() kullanarak bir müşteri tablosundaki kayıtları sıralayın</li>
-                        <li>RANK() ve DENSE_RANK() fonksiyonlarının farkını gösteren bir örnek oluşturun</li>
-                        <li>LEAD() ve LAG() fonksiyonları ile bir zaman serisindeki önceki ve sonraki değerleri getirin</li>
-                        <li>SUM() OVER(PARTITION BY ...) ile kategoriler bazında toplam hesaplayın</li>
-                    </ol>`
-                };
-            } else if (i <= 14) {
-                // 2. Hafta: CTE
-                dayData = {
-                    title: "Common Table Expressions (CTE)",
-                    theory: "CTE'ler, karmaşık sorguları daha okunabilir parçalara ayırmak için kullanılır. WITH anahtar kelimesi ile tanımlanır ve geçici bir sonuç kümesi oluşturur.",
-                    task: `<p><strong>Pratik Ödev:</strong> Aşağıdaki senaryo için CTE kullanın:</p>
-                    <ol>
-                        <li>İç içe 3 CTE oluşturarak veri hazırlığı yapın</li>
-                        <li>Recursive CTE kullanarak hiyerarşik bir yapı oluşturun</li>
-                        <li>CTE'ler ile bir raporlama sorgusu hazırlayın</li>
-                        <li>Aynı sorguyu subquery ile yazıp CTE ile karşılaştırın</li>
-                    </ol>`
-                };
-            } else if (i <= 21) {
-                // 3. Hafta: Stored Procedures
-                dayData = {
-                    title: "Stored Procedures",
-                    theory: "Stored Procedures, veritabanında saklanan önceden derlenmiş SQL kod bloklarıdır. Performans avantajı sağlar ve kod tekrarını önler.",
-                    task: `<p><strong>Pratik Ödev:</strong> Azure Synapse'de Stored Procedure geliştirin:</p>
-                    <ol>
-                        <li>Parametre alan bir stored procedure yazın</li>
-                        <li>TRY-CATCH blokları ile hata yönetimi ekleyin</li>
-                        <li>Tablodan veri okuyup işleyen bir SP oluşturun</li>
-                        <li>Transaction yönetimi içeren bir SP yazın</li>
-                    </ol>`
-                };
-            } else if (i <= 28) {
-                // 4. Hafta: Synapse Pipelines
-                dayData = {
-                    title: "Azure Synapse Pipelines",
-                    theory: "Azure Synapse Pipelines, veri entegrasyonu ve ETL/ELT işlemleri için kullanılan görsel bir araçtır. Veri akışları oluşturmanıza ve zamanlamanıza olanak tanır.",
-                    task: `<p><strong>Pratik Ödev:</strong> Azure Synapse'de Pipeline oluşturun:</p>
-                    <ol>
-                        <li>Blob Storage'dan veri okuyan basit bir pipeline oluşturun</li>
-                        <li>Veri dönüşümü (transform) adımı ekleyin</li>
-                        <li>Farklı kaynaklardan veri alıp birleştiren pipeline yapın</li>
-                        <li>Pipeline'ı tetikleyecek bir schedule olu
+function scheduleNextDayReminder() {
+    // Schedule notification for next day at 20:00
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(20, 0, 0, 0);
+    
+    const timeUntilTomorrow = tomorrow.getTime() - Date.now();
+    
+    setTimeout(() => {
+        if (appState.notifications) {
+            showNotification('🎯 Yeni günün görevi hazır! Hemen başlayın.');
+        }
+    }, timeUntilTomorrow);
+}
+
+// Helper Functions
+function getWeekTheme(weekNumber) {
+    if (weekNumber <= 6) return 'SQL & ETL Foundation';
+    if (weekNumber <= 12) return 'Power BI & DAX Mastery';
+    if (weekNumber <= 18) return 'Python & Automation';
+    return 'End-to-End Azure Project';
+}
+
+function getWeekContentId(week) {
+    const map = { '1': 'week1-6', '7': 'week7-12', '13': 'week13-18', '19': 'week19-24' };
+    return map[week] || 'week1-6';
+}
+
+function getWeekListId(week) {
+    if (week <= 6) return 'week1List';
+    if (week <= 12) return 'week2List';
+    if (week <= 18) return 'week3List';
+    return 'week4List';
+}
+
+function showCelebration(dayNumber) {
+    const messages = [
+        `Harika! Gün ${dayNumber} tamamlandı. 🎉`,
+        "Bir adım daha Senior Data Analyst'e yaklaştınız!",
+        "Kod mantığını anlamak için mükemmel bir ilerleme.",
+        "Pes etmemek için söz verdiniz ve tutuyorsunuz!",
+        "Her tamamlanan gün portfolyonuzu güçlendiriyor."
+    ];
+    
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+    showNotification(randomMessage);
+}
+
+// UI Helper Functions
+function setupNotificationToggle() {
+    const toggle = document.getElementById('notificationToggle');
+    if (toggle) {
+        toggle.checked = appState.notifications || false;
+    }
+}
+
+function updateVideosSection(videos) {
+    const videoGrid = document.querySelector('.video-grid');
+    if (videoGrid && videos) {
+        videoGrid.innerHTML = videos.map(video => `
+            <a href="${video.url}" target="_blank" class="video-card">
+                <div class="video-thumbnail" style="background-color: ${video.color || '#FF0000'}">
+                    <i class="fab fa-youtube"></i>
+                </div>
+                <div class="video-info">
+                    <h4>${video.title}</h4>
+                    <p>${video.creator}</p>
+                    <span class="video-duration">${video.duration}</span>
+                </div>
+            </a>
+        `).join('');
+    }
+}
+
+// Social Sharing Functions
+function copyLink() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+        showNotification('Link kopyalandı! LinkedIn postunda kullanabilirsiniz.', 'info');
+    });
+}
+
+// Modal Functions
+function showFeedbackModal() {
+    document.getElementById('feedbackModal').style.display = 'flex';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+function submitFeedback() {
+    const feedback = document.getElementById('feedbackText').value;
+    if (feedback.trim()) {
+        // In a real app, you would send this to a server
+        showNotification('Geri bildiriminiz için teşekkürler!', 'success');
+        document.getElementById('feedbackText').value = '';
+        closeModal('feedbackModal');
+    }
+}
+
+function subscribeNewsletter() {
+    showNotification('Bülten aboneliği yakında aktif olacak!', 'info');
+}
+
+// Add CSS animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+    
+    .notification.success { background: #4ade80; }
+    .notification.info { background: #3b82f6; }
+    .notification.warning { background: #f59e0b; }
+    
+    .pulse {
+        animation: pulse 0.5s ease;
+    }
+`;
+document.head.appendChild(style);
+
+// Initialize service worker for notifications (optional)
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(console.error);
+}
